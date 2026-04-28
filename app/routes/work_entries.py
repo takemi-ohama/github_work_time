@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from flask import Blueprint, render_template, redirect, url_for, request, flash, abort
 from flask_login import login_required, current_user
 from app import db
@@ -185,7 +185,7 @@ def update_entry(entry_id):
     entry.hours = hours
     entry.work_date = work_date
     entry.project_id = project_id
-    entry.updated_at = datetime.utcnow()
+    entry.updated_at = datetime.now(timezone.utc)
 
     db.session.commit()
     flash('工数を更新しました。', 'success')

@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from flask_login import UserMixin
 from app import db, login_manager
 
@@ -12,7 +12,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(200), nullable=True)
     email = db.Column(db.String(200), nullable=True)
     avatar_url = db.Column(db.String(500), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     projects = db.relationship('Project', backref='owner', lazy='dynamic', cascade='all, delete-orphan')
     work_entries = db.relationship('WorkEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
@@ -32,7 +32,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     work_entries = db.relationship('WorkEntry', backref='project', lazy='dynamic')
@@ -51,8 +51,8 @@ class WorkEntry(db.Model):
     description = db.Column(db.Text, nullable=True)
     hours = db.Column(db.Float, nullable=False, default=0.0)
     work_date = db.Column(db.Date, nullable=False, default=date.today)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
         return f'<WorkEntry {self.title} on {self.work_date}>'

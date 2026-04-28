@@ -37,7 +37,7 @@ class TestSummaryView:
 
         content = response.data.decode('utf-8')
         assert 'テストプロジェクト' in content
-        assert '6.5' in content or '6.5' in content  # total hours
+        assert '6.5' in content  # total hours
 
     def test_summary_date_filter(self, logged_in_client, db, test_user, test_project):
         old_entry = WorkEntry(
